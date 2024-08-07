@@ -95,7 +95,8 @@ var gauge_data = [
 	value: 0,
 	title: { text: "Carbon Budget Excess" },
 	type: "indicator",
-	mode: "gauge+number"
+	mode: "gauge+number",
+	number: {valueformat: ",.3f"}
     }
 ];
 
@@ -106,8 +107,9 @@ function excess_tracker_gauge_setup() {
 }
 
 function excess_tracker_gauge_update(){
- gauge_data[0].value=gauge_data[0].value+1;
- Plotly.redraw('gap-tracker-gauge')
+    //gauge_data[0].value=gauge_data[0].value+1;
+    gauge_data[0].value = excess;
+    Plotly.redraw('gap-tracker-gauge')
 }
 
 function excess_tracker_update(){
