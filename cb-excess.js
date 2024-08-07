@@ -96,7 +96,8 @@ var gauge_data = [
 	title: { text: "Carbon Budget Excess" },
 	type: "indicator",
 	mode: "gauge+number",
-	number: {valueformat: ",.3f"}
+	number: {valueformat: ",.3f"},
+	gauge: {axis : { range: [-20e6, 20e6]} }
     }
 ];
 
