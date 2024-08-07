@@ -13,8 +13,6 @@ var ICP_d_2021 ;
 var ICP_a1_2021 ;
 var ICP_start_date = new Date(2021, 0, 1, 0, 0, 0) ;
 
-console.log(ICP_start_date);
-
 function ICP_setup(data) {
     ICP_d_2021 = Number(data[0].d_2021);
     document.getElementById("ICP_d_2021").innerHTML = ICP_d_2021.toLocaleString(
@@ -83,27 +81,9 @@ function EAP_tracker_update() {
 }
 
 
-
-// Hard-code constants for demo tracker
-// complianceGapAtMidnight = 17250615.92;
-// todaysComplianceGapIncrease = 25138.91427;
-
-// increasePerSecond = todaysComplianceGapIncrease / (24 * 60 * 60);
-
 var excess = 0.0;
 
 function excess_tracker_txt_update() {
-    // now = new Date();
-    // midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0);
-    // millisecondsSinceMidnight = now.getTime() - midnight.getTime();
-    // tonnesSinceMidnight = (millisecondsSinceMidnight * increasePerSecond) / 1000;
-    // totalTonnes = complianceGapAtMidnight + tonnesSinceMidnight;
-    // totalTonnesText = totalTonnes.toLocaleString(undefined,
-    // 	{minimumFractionDigits: 3, maximumFractionDigits: 3})
-
-    // Output the result into the element with id="demo"
-    //document.getElementById("gap-tracker-txt").innerHTML = totalTonnesText;
-
     excess = EAP_S_n-ICP_S_n;
     document.getElementById("excess-tracker-txt").innerHTML = excess.toLocaleString(
 	undefined, {minimumFractionDigits: 3, maximumFractionDigits: 3})
@@ -113,7 +93,7 @@ var gauge_data = [
     {
 	domain: { x: [0, 1], y: [0, 1] },
 	value: 0,
-	title: { text: "Speed" },
+	title: { text: "Carbon Budget Excess" },
 	type: "indicator",
 	mode: "gauge+number"
     }
@@ -121,34 +101,35 @@ var gauge_data = [
 
 var gauge_layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
     
-function gap_tracker_gauge_setup() {
+function excess_tracker_gauge_setup() {
     Plotly.newPlot('gap-tracker-gauge', gauge_data, gauge_layout);
 }
 
-function gap_tracker_gauge_update(){
+function excess_tracker_gauge_update(){
  gauge_data[0].value=gauge_data[0].value+1;
  Plotly.redraw('gap-tracker-gauge')
 }
 
-function tracker_update(){
+function excess_tracker_update(){
     clock_tracker_update();
     ICP_tracker_update();
     EAP_tracker_update();
     excess_tracker_txt_update();
+    excess_tracker_gauge_update(); // FIXME: maybe run at lower frequency?
 }
 
-function cb_gap_tracker_setup(){
+function excess_tracker_setup(){
     d3.csv("ICP-prms-CSV.csv", function(data){ICP_setup(data);});
     d3.csv("EAP-prms-CSV.csv", function(data){EAP_setup(data);});
     // FIXME: race condition risk!! Need to wait for both CSV loads to complete...
-    setInterval(tracker_update, tracker_period);
+
+    excess_tracker_gauge_setup();
+
+    setInterval(excess_tracker_update, tracker_period);
     //setTimeout(tracker_update, tracker_period); // one-shot!
     
-    //setInterval(gap_tracker_txt_update, 100);
-    //gap_tracker_gauge_setup();
-    //setInterval(gap_tracker_gauge_update,tracker_period)
 }
 
-document.addEventListener("DOMContentLoaded", cb_gap_tracker_setup);
+document.addEventListener("DOMContentLoaded", excess_tracker_setup);
 
 

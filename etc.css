@@ -6,7 +6,7 @@ body {
 }
 
 
-blockquote { fontstyle: italic; }
+blockquote { font-style: italic; }
 
 div.box { 
     border: solid; 
