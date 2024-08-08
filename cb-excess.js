@@ -104,8 +104,8 @@ function excess_tracker_txt_update() {
 var gauge_layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
 
 var gauge_data = [{
-    title: { text: "Carbon Budget Excess" },
-    value: excess, // Only affects number display
+    title: { text: "Carbon Budget Excess (tCO<sub>2</sub>e)" },
+    value: excess, // Sets number display
     type: 'indicator',
     mode: 'number+gauge',
     number: {valueformat: ",.3f"},
@@ -131,7 +131,7 @@ var gauge_data = [{
             },
             {
 		range: [0, excess], // Sets dynamic bar display
-		color: 'blue',
+		color: 'purple',
 		thickness: 0.6,
             },
         ]
@@ -159,7 +159,7 @@ var excess_dummy_max = 10e6;
 var excess_dummy_step = 1e5;
 
 var gauge_data_dummy = [{
-    title: { text: "Carbon Budget Excess [dummy]" },
+    title: { text: "Carbon Budget Excess [dummy] <br> (tCO<sub>2</sub>e)" },
     value: excess_dummy, // Unnecessary/no effect?
     type: 'indicator',
     mode: 'number+gauge',
@@ -186,7 +186,7 @@ var gauge_data_dummy = [{
             },
             {
 		range: [0, excess_dummy],
-		color: 'blue',
+		color: 'purple',
 		thickness: 0.6,
             },
         ]

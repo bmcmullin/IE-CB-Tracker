@@ -42,4 +42,7 @@
   reference?](https://stackoverflow.com/questions/10953303/javascript-interpret-string-as-object-reference)
 + [Setup D3.js Development
   Environment](https://www.tutorialsteacher.com/d3js/setup-d3js-development-environment)
-+ [Firefox: Styles within pages are cached and don't reload. How not to cache styles in local pages?](https://support.mozilla.org/en-US/questions/1271095)
++ [Firefox: Styles within pages are cached and don't reload. How
+  not to cache styles in local
+  pages?](https://support.mozilla.org/en-US/questions/1271095)
++ [js: Predefined Color Names](http://www.javascripter.net/faq/colornam.htm)

@@ -12,27 +12,48 @@
 
 	<h1>IE Carbon Budget Tracker: Proof of Principle demo</h1>
 	<h2>Barry McMullin</h2>
-	<h3>v. 0.1alpha (2024-08-06)</h3>
+	<h3>v. 0.1alpha (2024-08-08)</h3>
 
 	<p><strong>Caution:</strong> This is an experimental
 	    work-in-progress. Data shown is for test/illustration
 	    purposes only.</p>
+
+	<h2>Realtime clock</h2>
+	<p>Datetime NOW: <strong><span id="tracker_now"></span></strong></p>
+	
+	<h2>IE CB budget excess (AKA "cumulative overshoot"): Realtime Tracker(s)</h2>
+
+	<h3>Text-only Tracker</h3>
+	<p><strong>CB1 budget excess: <span id="excess-tracker-txt">0.0</span> tCO<sub>2</sub>e</strong></p>
+
+	<h3>Gauge Tracker</h3>
+
+	<div id='gap-tracker-gauge'><!-- Plotly chart will be drawn inside this DIV --></div>
+
+
+	<h3>Gauge Tracker [DUMMY]</h3>
+
+	<p>This is a dummy version of the gauge tracker where the notional excess value is being artificially swept over a
+	    range of positive and negative values just to illustrate how the gauge would appear in different circumstances.</p>
 	
 
-	<h2>Concept: Illustrative Pathways and Compliance Gap</h2>
+	<div id='gap-tracker-gauge-dummy'><!-- Plotly chart will be drawn inside this DIV --></div>
+
+
+	<h2>Background: Illustrative Pathways and Budget "Excess" ("overshoot")</h2>
 
 	<ul>
-	    <li>"Indicative Compliance Pathway" [ICP] denotes an emissions
-		pathway where the emissions level (tCO2e/s) declines linearly
-		in time at just the right rate to exactly use up the approved
-		budget over the full period 2021-2025. The starting emissions
-		level is calibrated on the basis that, if the same pathway
-		were extrapolated back for one year, the annual emissions
-		level would match that of 2018 (nominal "pre-pandemic"
-		level).</li>
+	    <li>"Indicative Compliance Pathway" [ICP] denotes a "piecewise
+	        linear" emissions pathway where the emissions level (tCO<sub>2</sub>e/s)
+		declines linearly in time at just the right rate to exactly use
+		up the approved budget within each successive 5-year period
+		(starting with 2021-2025). The starting emissions level is
+		calibrated on the basis that, if the pathway for 2021-2025 were
+		extrapolated back for one year, the annual emissions level would
+		match that of 2018 (nominal "pre-pandemic" level).</li>
 	    <li>"Estimated Actual Pathway" [EAP] denotes an
 		emissions pathway which is "piecewise linear" for
-		each year of the budget period. The annual
+		each individual year at a time. The annual
 		emissions level in each year matches the most
 		recent EPA inventory where available, or
 		otherwise the most recent EPA projections. For
@@ -44,55 +65,62 @@
 		emissions. The level at the end of each year then
 		sets the initial level for the following year.
 		left.</li>
-	    <li>At any point in time during the budget period, if the
-		cumulative amount of the EAP is above that of the ICP this
+	    <li>EAP is currently hardwired to follow the more optimistic EPA
+	        projections, called "With Additional Measures" or WAM. However,
+	        it would be better to also offer the option of using the more
+	        realistic EPA "With Existing Measures" or WEM scenario (under
+	        user control).</li>
+	    <li>At any point in time, if the
+		<em>cumulative</em> amount of the EAP is above that of the ICP this
 		difference (ΣEAP - ΣICP) is interpreted as an emerging budget
-		excess or <em>Compliance Gap</em>. (Of course, if the
+		"excess", "overshoot" or "compliance gap". (Of course, if the
 		cumulative EAP were to fall <em>below</em> the cumulative ICP
-		this different would be negative and indicate an emerging
+		this difference would be negative and indicate an emerging
 		budget <em>surplus</em>: happy days!).</li>
-	    <li>For the moment we are showing the Compliance Gap denominated in
+	    <li>For the moment we are showing the excess denominated in
 		tCO<sub>2</sub>e. It might equally (?)  be denominated in
-		percent of the available budget.</li>
-
-	    <li>The idea of the [imagined - not yet implemented!]
-		"gauge" chart is that if the pointer is centred
-		("12 o'clock", or 0 tCO<sub>2</sub>e or 0% of the budget)
-		then we are running exactly as per the "Indicative
-		Compliance" pathway. If it moves into the area to the right
-		(to be coloured red?) then a compliance gap is opening
-		up. Conversely, moving into the left area (to be coloured
-		green?) would indicate a (prudential!) "compliance surplus"
-		being built up.</li>
-	    <li>The "full scale" amount is a bit arbitrary, but
+		percent of the "available" budget to that time (i.e., ΣICP).</li>
+	    <li>The gauge background uses a "traffic light" pattern: green is
+	        "good" (definite compliance), red is "bad/stop" (definite
+	        excess/overshoot), and then there is also an indicative area of orange in
+	        between, denoting "uncertain" compliance status. The size of the
+	        orange area is arbitrary, or rather relects a value judgement about the
+	        reasonable space for ongoing policy "flexibility". But the
+	        concepual intention is that going beyond orange, into red, should
+	        unambiguously indicate a need for emergency policy action.</li>
+	    <li>So on top of the traffic light background we present an indicator bar (purple) showing the current compliance status. If the indicator bar is
+		centred/invisible ("12 o'clock", or 0 tCO<sub>2</sub>e or 0% of the budget) then
+		we are running exactly as per the "Indicative Compliance"
+		pathway. If this bar extends into the area to the right (orange-to-red)
+		then this indicates an excess/overshoot and a compliance gap is
+		opening up. Conversely, moving into the left area (orange-to-green) would
+		indicate a (prudential!) "compliance surplus" being built up.</li>
+	    <li>The "full scale" amount is a again fairly arbitrary, but
 		would be informed by the projected maximum overshoot for
-		the full period. Thus, the full gauge
-		might run from, say, -20% to +20% for CB1. </li>
+		some point into the future. </li>
 	    <li>A separate or additional concept might be a gauge chart
 		showing not the accumulative compliance gap but
 		the <em>rate</em> at which that gap is increasing (or
 		decreasing): i.e. are we still accelerating (relative to
 		the "speed" that would comply with the budget) or are we at
-		least beginning to apply the brakes?
+		least beginning to apply the brakes?</li>
 	</ul>
 
-	<h2>Realtime clock</h2>
-	<p>Datetime NOW: <strong><span id="tracker_now"></span></strong></p>
-	
 
-	<h2>Indicative Compliance Pathway (ICP)</h2>
-	<h3>Parameters (via <a href="ICP-prms-CSV.csv">ICP-prms-CSV.csv</a>)</h3>
+	<h2>Detailed pathways</h2>
+	<h3>Indicative Compliance Pathway (ICP)</h3>
+	<h4>Parameters (via <a href="ICP-prms-CSV.csv">ICP-prms-CSV.csv</a>)</h4>
 
 	<p>ICP d [2021]: <var><span id="ICP_d_2021"></span></var> tCO<sub>2</sub>e/s<sup>2</sup></p>
 	<p>ICP a<sub>1</sub> [2021]: <var><span id="ICP_a1_2021"></span></var> tCO<sub>2</sub>e/s</p>
 
-	<h3>Realtime Tracker</h3>
+	<h4>Realtime Tracker</h4>
 	<p>ICP n: <var><span id="ICP_n"></span></var> s</p>
 	<p>ICP a<sub>n</sub>: <var><span id="ICP_a_n"></span></var> tCO<sub>2</sub>e/s</p>
 	<p>ICP Σa<sub>n</sub>: <strong><span id="ICP_S_n"></span></strong> tCO<sub>2</sub>e</p>
 
-	<h2>Estimated Actual Pathway (EAP)</h2>
-	<h3>Parameters (via <a href="EAP-prms-CSV.csv">EAP-prms-CSV.csv</a>)</h3>
+	<h3>Estimated Actual Pathway (EAP)</h3>
+	<h4>Parameters (via <a href="EAP-prms-CSV.csv">EAP-prms-CSV.csv</a>)</h4>
 
 	<table>
 	    <tr><th>prm</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th></tr>
@@ -119,7 +147,7 @@
 	    </tr>
 	</table>
 
-	<h3>Realtime Tracker</h3>
+	<h4>Realtime Tracker</h4>
 	
 	<p>EAP year segment: <var><span id="year_now"></span></var></p>
 	<p>EAP Σa<sub>0</sub>: <var><span id="EAP_S_0"></span></var> tCO<sub>2</sub>e</p>
@@ -130,23 +158,6 @@
 	<p>EAP Σa<sub>0</sub>+Σa<sub>n</sub>: <strong><span id="EAP_S_n"></span></strong> tCO<sub>2</sub>e</p>
 	
 	
-	<h2>CB budget excess: Realtime Tracker(s)</h2>
-
-	<h3>Text-only Tracker</h3>
-	<p class="excess">CB1 budget excess: <span id="excess-tracker-txt">0.0</span> tCO<sub>2</sub>e</p>
-
-	<h3>Gauge Tracker</h3>
-
-	<div id='gap-tracker-gauge'><!-- Plotly chart will be drawn inside this DIV --></div>
-
-
-	<h3>Gauge Tracker [DUMMY]</h3>
-
-	<p>This is a dummy version of the gauge tracker where the notional excess value is being artificially swept over a
-	    range of positive and negative values just to illustrate how the gauge would appear in different circumstances.</p>
-	
-
-	<div id='gap-tracker-gauge-dummy'><!-- Plotly chart will be drawn inside this DIV --></div>
 
     </body>
 </html>
