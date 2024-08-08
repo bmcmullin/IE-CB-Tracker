@@ -18,6 +18,9 @@
 + [Data Loading in D3](https://www.tutorialsteacher.com/d3js/loading-data-from-file-in-d3js)
 + [How to Wait for the DOM Ready Event in
   JavaScript](https://orangeable.com/javascript/dom-ready-event)
++ [plotly: Set bar origin in angular gauge indicator to start at
+  0](https://community.plotly.com/t/set-bar-origin-in-angular-gauge-indicator-to-start-at-0/44838)
+      [stackoverflow response](https://stackoverflow.com/questions/63872153/set-the-bar-origin-in-gauge-indicator-to-start-at-0-in-plot-ly)
   
 + [JavaScript Where
   To](https://www.w3schools.com/js/js_whereto.asp)

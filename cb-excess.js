@@ -81,7 +81,7 @@ function EAP_tracker_update() {
 }
 
 
-var excess = 0.0;
+var excess = 1e6;
 
 function excess_tracker_txt_update() {
     excess = EAP_S_n-ICP_S_n;
@@ -89,28 +89,126 @@ function excess_tracker_txt_update() {
 	undefined, {minimumFractionDigits: 3, maximumFractionDigits: 3})
 }
 
-var gauge_data = [
-    {
-	domain: { x: [0, 1], y: [0, 1] },
-	value: 0,
-	title: { text: "Carbon Budget Excess" },
-	type: "indicator",
-	mode: "gauge+number",
-	number: {valueformat: ",.3f"},
-	gauge: {axis : { range: [-20e6, 20e6]} }
-    }
-];
+// var gauge_data_old = [
+//     {
+// 	title: { text: "Carbon Budget Excess" },
+// 	value: 0,
+// 	domain: { x: [0, 1], y: [0, 1] },
+// 	type: "indicator",
+// 	mode: "gauge+number",
+// 	number: {valueformat: ",.3f"},
+// 	gauge: {axis : { range: [-20e6, 20e6]} }
+//     }
+// ];
 
 var gauge_layout = { width: 600, height: 500, margin: { t: 0, b: 0 } };
-    
+
+var gauge_data = [{
+    title: { text: "Carbon Budget Excess" },
+    value: excess, // Only affects number display
+    type: 'indicator',
+    mode: 'number+gauge',
+    number: {valueformat: ",.3f"},
+    gauge: {
+	axis : { range: [-20e6, 20e6]},
+	shape: 'angular',
+	bar: { thickness: 0 },
+	steps: [
+            {
+		range: [-20e6, -5e6],
+		color: 'green',
+		thickness: 1,
+            },
+            {
+		range: [-5e6, 5e6],
+		color: 'orange',
+		thickness: 1,
+            },
+            {
+		range: [5e6, 20e6],
+		color: 'red',
+		thickness: 1,
+            },
+            {
+		range: [0, excess], // Sets dynamic bar display
+		color: 'blue',
+		thickness: 0.6,
+            },
+        ]
+    },
+}];
+
 function excess_tracker_gauge_setup() {
     Plotly.newPlot('gap-tracker-gauge', gauge_data, gauge_layout);
 }
 
+
 function excess_tracker_gauge_update(){
-    //gauge_data[0].value=gauge_data[0].value+1;
-    gauge_data[0].value = excess;
+    //gauge_data[0].value = excess;
+    //gauge_data[0].gauge.steps[2].range = [0, excess];
+
+    gauge_data[0].value = excess; // Only affects number display
+    gauge_data[0].gauge.steps[3].range = [0, excess];
+    
     Plotly.redraw('gap-tracker-gauge')
+}
+
+
+var excess_dummy = 0;
+var excess_dummy_max = 10e6;
+var excess_dummy_step = 1e5;
+
+var gauge_data_dummy = [{
+    title: { text: "Carbon Budget Excess [dummy]" },
+    value: excess_dummy, // Unnecessary/no effect?
+    type: 'indicator',
+    mode: 'number+gauge',
+    number: {valueformat: ",.3f"},
+    gauge: {
+	axis : { range: [-20e6, 20e6]},
+	shape: 'angular',
+	bar: { thickness: 0 },
+	steps: [
+            {
+		range: [-20e6, -5e6],
+		color: 'green',
+		thickness: 1,
+            },
+            {
+		range: [-5e6, 5e6],
+		color: 'orange',
+		thickness: 1,
+            },
+            {
+		range: [5e6, 20e6],
+		color: 'red',
+		thickness: 1,
+            },
+            {
+		range: [0, excess_dummy],
+		color: 'blue',
+		thickness: 0.6,
+            },
+        ]
+    },
+}];
+
+function excess_tracker_gauge_dummy_setup() {
+    Plotly.newPlot('gap-tracker-gauge-dummy', gauge_data_dummy, gauge_layout);
+}
+
+
+function excess_tracker_gauge_dummy_update(){
+    //gauge_data[0].value = excess;
+    //gauge_data[0].gauge.steps[2].range = [0, excess];
+    excess_dummy = excess_dummy + excess_dummy_step;
+    if ((excess_dummy > excess_dummy_max) | (excess_dummy < (-excess_dummy_max))) {
+	excess_dummy_step = -excess_dummy_step;
+    }
+    gauge_data_dummy[0].value = excess_dummy; // Unnecessary/no effect?
+    gauge_data_dummy[0].gauge.steps[3].range = [0, excess_dummy];
+    
+    Plotly.redraw('gap-tracker-gauge-dummy')
 }
 
 function excess_tracker_update(){
@@ -119,6 +217,7 @@ function excess_tracker_update(){
     EAP_tracker_update();
     excess_tracker_txt_update();
     excess_tracker_gauge_update(); // FIXME: maybe run at lower frequency?
+    excess_tracker_gauge_dummy_update();
 }
 
 function excess_tracker_setup(){
@@ -127,6 +226,7 @@ function excess_tracker_setup(){
     // FIXME: race condition risk!! Need to wait for both CSV loads to complete...
 
     excess_tracker_gauge_setup();
+    excess_tracker_gauge_dummy_setup();
 
     setInterval(excess_tracker_update, tracker_period);
     //setTimeout(tracker_update, tracker_period); // one-shot!
