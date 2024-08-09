@@ -1,6 +1,7 @@
 *~
 *.csv
 *.log
+*~.lock*
 __pycache__
 \.ipynb_checkpoints*
 scratchpad
